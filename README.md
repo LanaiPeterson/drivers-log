@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚛 Truck Driver Hours Log Application
 
 A comprehensive web-based application for truck drivers to track their hours and maintain DOT compliance. This application helps drivers log their on-duty, driving, off-duty, and sleeper berth hours while automatically checking for Hours of Service (HOS) violations.
