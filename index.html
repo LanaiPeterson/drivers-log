@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Driver Hours Log</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🚛 Driver Hours Log</h1>
+                <p>Please log in to track your hours</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="loginDriverId">Driver ID:</label>
+                    <input type="text" id="loginDriverId" placeholder="Enter your driver ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-primary login-btn">Login</button>
+                <button type="button" id="registerBtn" class="btn-secondary">New Driver? Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="registerClose">&times;</span>
+            <h3>Register New Driver</h3>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="regDriverId">Driver ID:</label>
+                    <input type="text" id="regDriverId" placeholder="Create a unique driver ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="regDriverName">Full Name:</label>
+                    <input type="text" id="regDriverName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password:</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <div class="form-group">
+                    <label for="regLicenseNumber">CDL License Number:</label>
+                    <input type="text" id="regLicenseNumber" placeholder="Enter your CDL license number" required>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🚛 Driver Hours Log</h1>
+                    <p>Track your hours according to DOT regulations</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Welcome, <strong id="loggedInUser">Driver</strong></span>
+                        <button id="logoutBtn" class="btn-logout">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="driver-info">
+            <div class="info-group">
+                <label for="currentDate">Date:</label>
+                <input type="date" id="currentDate">
+            </div>
+            <div class="info-group">
+                <label>Driver ID:</label>
+                <span id="currentDriverId" class="driver-display">--</span>
+            </div>
+        </div>
+
+        <div class="status-controls">
+            <h2>Current Status</h2>
+            <div class="status-buttons">
+                <button id="onDutyBtn" class="status-btn" data-status="on-duty">On Duty</button>
+                <button id="drivingBtn" class="status-btn" data-status="driving">Driving</button>
+                <button id="offDutyBtn" class="status-btn active" data-status="off-duty">Off Duty</button>
+                <button id="sleeperBtn" class="status-btn" data-status="sleeper">Sleeper Berth</button>
+                <button id="breakBtn" class="status-btn" data-status="break">30 Min Break</button>
+            </div>
+            <div class="current-status">
+                <span>Status: <strong id="currentStatusText">Off Duty</strong></span>
+                <span>Started at: <strong id="statusStartTime">--:--</strong></span>
+            </div>
+        </div>
+
+        <div class="hours-summary">
+            <h2>Today's Hours Summary</h2>
+            <div class="hours-grid">
+                <div class="hours-card">
+                    <h3>On Duty</h3>
+                    <div class="hours-display" id="onDutyHours">0:00</div>
+                    <small>Max: 14 hours</small>
+                </div>
+                <div class="hours-card">
+                    <h3>Driving</h3>
+                    <div class="hours-display" id="drivingHours">0:00</div>
+                    <small>Max: 11 hours</small>
+                </div>
+                <div class="hours-card">
+                    <h3>Off Duty</h3>
+                    <div class="hours-display" id="offDutyHours">0:00</div>
+                </div>
+                <div class="hours-card">
+                    <h3>Sleeper Berth</h3>
+                    <div class="hours-display" id="sleeperHours">0:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="break-status">
+            <h2>30-Minute Break Status</h2>
+            <div class="break-info">
+                <span class="break-indicator" id="breakIndicator">❌ Required</span>
+                <span id="breakStatus">No 30-minute break taken after 8 hours of driving</span>
+            </div>
+        </div>
+
+        <div class="log-entries">
+            <h2>Today's Log Entries</h2>
+            <div class="log-controls">
+                <button id="addEntryBtn" class="btn-primary">Add Manual Entry</button>
+                <button id="viewHistoryBtn" class="btn-secondary">View History</button>
+                <button id="clearLogBtn" class="btn-danger">Clear Today's Log</button>
+            </div>
+            <div class="log-list" id="logList">
+                <!-- Log entries will be dynamically added here -->
+            </div>
+        </div>
+
+        <div class="violation-alerts" id="violationAlerts">
+            <!-- Violation alerts will appear here -->
+        </div>
+    </div>
+
+    <!-- Modal for manual entry -->
+    <div id="manualEntryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Add Manual Entry</h3>
+            <form id="manualEntryForm">
+                <div class="form-group">
+                    <label for="entryStatus">Status:</label>
+                    <select id="entryStatus" name="entryStatus" required>
+                        <option value="on-duty">On Duty</option>
+                        <option value="driving">Driving</option>
+                        <option value="off-duty">Off Duty</option>
+                        <option value="sleeper">Sleeper Berth</option>
+                        <option value="break">30 Min Break</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="entryStartTime">Start Time:</label>
+                    <input type="time" id="entryStartTime" name="entryStartTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="entryEndTime">End Time:</label>
+                    <input type="time" id="entryEndTime" name="entryEndTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="entryLocation">Location:</label>
+                    <input type="text" id="entryLocation" name="entryLocation" placeholder="City, State">
+                </div>
+                <div class="form-group">
+                    <label for="entryRemarks">Remarks:</label>
+                    <textarea id="entryRemarks" name="entryRemarks" placeholder="Optional remarks"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Add Entry</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content history-modal">
+            <span class="close" id="historyClose">&times;</span>
+            <h3>Driver History</h3>
+            <div class="history-controls">
+                <label for="historyDateRange">Date Range:</label>
+                <input type="date" id="historyStartDate">
+                <span>to</span>
+                <input type="date" id="historyEndDate">
+                <button id="loadHistoryBtn" class="btn-primary">Load History</button>
+            </div>
+            <div id="historyContent">
+                <p>Select a date range to view your driving history.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
